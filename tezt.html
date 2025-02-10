@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xgxv</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+  let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let startX = 0, startY = 0;
+let isFirstClick = true; // Чи це перше натискання
+let drawnArrows = []; // Масив для збереження стрілок
+let tempEndX = 0, tempEndY = 0; // Тимчасові координати кінця стрілки
+
+// Початок або завершення малювання
+canvas.addEventListener("mousedown", (e) => {
+    if (isFirstClick) {
+        // Перше натискання – запам’ятовуємо початкову точку
+        startX = e.clientX;
+        startY = e.clientY;
+        isFirstClick = false; // Переходимо до стану очікування другого кліку
+    } else {
+        // Друге натискання – фіксуємо стрілку
+        drawnArrows.push({ x1: startX, y1: startY, x2: tempEndX, y2: tempEndY });
+        isFirstClick = true; // Повертаємося до стану очікування першого кліку
+    }
+});
+
+// Малювання стрілки в реальному часі
+canvas.addEventListener("mousemove", (e) => {
+    if (isFirstClick) return; // Якщо ми ще не обрали початкову точку – нічого не робимо
+
+    tempEndX = e.clientX;
+    tempEndY = e.clientY;
+
+    redrawCanvas(); // Оновлюємо всі старі стрілки
+    drawArrow(startX, startY, tempEndX, tempEndY); // Малюємо тимчасову стрілку
+});
+
+// Функція для перемальовування всіх стрілок
+function redrawCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawnArrows.forEach(arrow => drawArrow(arrow.x1, arrow.y1, arrow.x2, arrow.y2));
+}
+function clearevryth(){
+ ctx.clearRect();
+}
+
+// Функція для малювання стрілки
+function drawArrow(x1, y1, x2, y2) {
+    const headLength = 10;
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+
+    // Наконечник стрілки
+    ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6),
+               y2 - headLength * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6),
+               y2 - headLength * Math.sin(angle + Math.PI / 6));
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+</script>
+</body>
+</html> 
