@@ -46,12 +46,17 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 // Функція для перемальовування всіх стрілок
+document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "c") {
+        drawnArrows = []; 
+        redrawCanvas(); 
+    }
+});
+
+// Функція для перемальовування всіх стрілок
 function redrawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawnArrows.forEach(arrow => drawArrow(arrow.x1, arrow.y1, arrow.x2, arrow.y2));
-}
-function clearevryth(){
- ctx.clearRect();
 }
 
 // Функція для малювання стрілки
